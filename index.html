@@ -1,352 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Forge | GPT-OSS</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg: #f8fafc;
-            --sidebar: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --anim-speed: 0.3s;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Forge | GPT-OSS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --sidebar: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --anim-speed: 0.3s;
+        }
 
-        body {
-            margin: 0; font-family: 'Inter', system-ui, sans-serif;
-            background: var(--bg); color: var(--text-main);
-            height: 100vh; display: flex; overflow: hidden;
-        }
+        body {
+            margin: 0; font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg); color: var(--text-main);
+            height: 100vh; display: flex; overflow: hidden;
+        }
 
-        .hidden { display: none !important; }
+        .hidden { display: none !important; }
 
-        /* --- AUTH VIEW --- */
-        #authView {
-            width: 100%; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            position: absolute; height: 100vh; z-index: 100;
-            transition: opacity 0.5s ease;
-        }
-        .auth-card {
-            background: white; padding: 40px; border-radius: 20px;
-            width: 100%; max-width: 380px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            animation: slideUp 0.5s ease-out;
-        }
+        /* --- AUTH VIEW --- */
+        #authView {
+            width: 100%; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            position: absolute; height: 100vh; z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        .auth-card {
+            background: white; padding: 40px; border-radius: 20px;
+            width: 100%; max-width: 380px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: slideUp 0.5s ease-out;
+        }
 
-        /* --- BUTTONS --- */
-        button { cursor: pointer; border: none; transition: 0.2s; font-weight: 600; }
-        .btn-primary { background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
-        .btn-success { background: var(--success); color: white; padding: 10px 20px; border-radius: 10px; width: 100%; }
-        .btn-success:hover { filter: brightness(1.1); }
-        .btn-logout { color: var(--danger); border-top: 1px solid var(--border); width: 100%; text-align: left; padding: 15px 10px; background: transparent; }
-        .btn-logout:hover { background: #fff1f2; }
+        /* --- BUTTONS --- */
+        button { cursor: pointer; border: none; transition: 0.2s; font-weight: 600; }
+        .btn-primary { background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-success { background: var(--success); color: white; padding: 10px 20px; border-radius: 10px; width: 100%; }
+        .btn-success:hover { filter: brightness(1.1); }
+        .btn-logout { color: var(--danger); border-top: 1px solid var(--border); width: 100%; text-align: left; padding: 15px 10px; background: transparent; }
+        .btn-logout:hover { background: #fff1f2; }
 
-        /* --- APP LAYOUT --- */
-        #appView { width: 100%; display: flex; flex-direction: row; animation: fadeIn 0.5s ease-in; }
-        
-        .sidebar {
-            width: 280px; background: var(--sidebar); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; padding: 20px;
-        }
+        /* --- APP LAYOUT --- */
+        #appView { width: 100%; display: flex; flex-direction: row; animation: fadeIn 0.5s ease-in; }
+        
+        .sidebar {
+            width: 280px; background: var(--sidebar); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 20px;
+        }
 
-        .main-content { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        .main-content { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
 
-        .nav-btn {
-            width: 100%; text-align: left; padding: 10px; margin-bottom: 5px;
-            border-radius: 8px; border: none; background: transparent;
-            cursor: pointer; color: var(--text-main); font-weight: 500;
-            transition: var(--anim-speed);
-        }
-        .nav-btn:hover { background: #f1f5f9; transform: translateX(5px); }
+        .nav-btn {
+            width: 100%; text-align: left; padding: 10px; margin-bottom: 5px;
+            border-radius: 8px; border: none; background: transparent;
+            cursor: pointer; color: var(--text-main); font-weight: 500;
+            transition: var(--anim-speed);
+        }
+        .nav-btn:hover { background: #f1f5f9; transform: translateX(5px); }
 
-        /* --- CHAT BOX --- */
-        .chat-box { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
-        .message { max-width: 85%; line-height: 1.6; opacity: 0; animation: msgSlide 0.4s forwards; }
-        .message-content { padding: 12px 18px; border-radius: 15px; font-size: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .user { align-self: flex-end; }
-        .user .message-content { background: var(--primary); color: white; border-bottom-right-radius: 2px; }
-        .ai { align-self: flex-start; }
-        .ai .message-content { background: #f1f5f9; color: var(--text-main); border-bottom-left-radius: 2px; }
+        /* --- CHAT BOX --- */
+        .chat-box { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
+        .message { max-width: 85%; line-height: 1.6; opacity: 0; animation: msgSlide 0.4s forwards; }
+        .message-content { padding: 12px 18px; border-radius: 15px; font-size: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .user { align-self: flex-end; }
+        .user .message-content { background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+        .ai { align-self: flex-start; }
+        .ai .message-content { background: #f1f5f9; color: var(--text-main); border-bottom-left-radius: 2px; }
 
-        /* --- CODE BOX & COPY --- */
-        .code-container { position: relative; margin: 15px 0; border-radius: 10px; overflow: hidden; background: #1e1e1e; }
-        .code-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: #2d2d2d; padding: 6px 15px; font-size: 11px; color: #aaa; 
-            font-family: monospace; border-bottom: 1px solid #3d3d3d;
-        }
-        .copy-btn { 
-            background: #444; color: #fff; border: none; padding: 4px 8px; 
-            border-radius: 4px; font-size: 10px; cursor: pointer; transition: 0.2s;
-        }
-        .copy-btn:hover { background: #666; }
-        pre { margin: 0 !important; padding: 15px; overflow-x: auto; }
-        code { font-family: 'Fira Code', monospace; font-size: 14px; }
+        /* --- CODE BOX & COPY --- */
+        .code-container { position: relative; margin: 15px 0; border-radius: 10px; overflow: hidden; background: #1e1e1e; }
+        .code-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: #2d2d2d; padding: 6px 15px; font-size: 11px; color: #aaa; 
+            font-family: monospace; border-bottom: 1px solid #3d3d3d;
+        }
+        .copy-btn { 
+            background: #444; color: #fff; border: none; padding: 4px 8px; 
+            border-radius: 4px; font-size: 10px; cursor: pointer; transition: 0.2s;
+        }
+        .copy-btn:hover { background: #666; }
+        pre { margin: 0 !important; padding: 15px; overflow-x: auto; }
+        code { font-family: 'Fira Code', monospace; font-size: 14px; }
 
-        .input-container { padding: 20px 40px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: white; }
-        input[type="text"], input[type="email"], input[type="password"] { 
-            padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; width: 100%; box-sizing: border-box; 
-        }
+        .input-container { padding: 20px 40px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: white; }
+        input[type="text"], input[type="email"], input[type="password"] { 
+            padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; width: 100%; box-sizing: border-box; 
+        }
 
-        /* --- ANIMATIONS --- */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes msgSlide { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    </style>
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes msgSlide { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
 </head>
 <body>
 
-    <div id="authView">
-        <div class="auth-card">
-            <h2 style="margin-top:0">Quantum Forge</h2>
-            <input type="email" id="email" placeholder="Email" style="margin-bottom:10px">
-            <input type="password" id="password" placeholder="Password" style="margin-bottom:20px">
-            <button class="btn-primary" onclick="handleAuth('login')" style="width:100%">Sign In</button>
-            <button class="nav-btn" onclick="handleAuth('signup')" style="text-align:center; margin-top:10px">Create Account</button>
-            <div id="authError" style="color:var(--danger); font-size:12px; margin-top:15px; text-align:center"></div>
-        </div>
-    </div>
+    <div id="authView">
+        <div class="auth-card">
+            <h2 style="margin-top:0">Quantum Forge</h2>
+            <input type="email" id="email" placeholder="Email" style="margin-bottom:10px">
+            <input type="password" id="password" placeholder="Password" style="margin-bottom:20px">
+            <button class="btn-primary" onclick="handleAuth('login')" style="width:100%">Sign In</button>
+            <button class="nav-btn" onclick="handleAuth('signup')" style="text-align:center; margin-top:10px">Create Account</button>
+            <div id="authError" style="color:var(--danger); font-size:12px; margin-top:15px; text-align:center"></div>
+        </div>
+    </div>
 
-    <div id="appView" class="hidden">
-        <div class="sidebar">
-            <div class="sidebar-user" style="display:flex; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:20px;">
-                <img id="sideAvatar" src="https://via.placeholder.com/42" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
-                <div>
-                    <div id="sideName" style="font-weight:700; font-size:14px">User</div>
-                    <div style="font-size:10px; color:var(--primary)">GPT-OSS 120B</div>
-                </div>
-            </div>
+    <div id="appView" class="hidden">
+        <div class="sidebar">
+            <div class="sidebar-user" style="display:flex; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:20px;">
+                <img id="sideAvatar" src="https://via.placeholder.com/42" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                <div>
+                    <div id="sideName" style="font-weight:700; font-size:14px">User</div>
+                    <div style="font-size:10px; color:var(--primary)">GPT-OSS 120B</div>
+                </div>
+            </div>
 
-            <label style="font-size: 10px; color: var(--text-muted); font-weight: 800; margin-bottom: 5px;">AI PERSONA</label>
-            <select id="modelSelect" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); margin-bottom:20px; background:var(--bg); font-weight:600;">
-                <option value="jarvis">Jarvis (Research)</option>
-                <option value="friday">Friday (Creative)</option>
-                <option value="vision">Vision (Logic)</option>
-                <option value="atlas">Atlas (Balanced)</option>
-            </select>
+            <label style="font-size: 10px; color: var(--text-muted); font-weight: 800; margin-bottom: 5px;">AI PERSONA</label>
+            <select id="modelSelect" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); margin-bottom:20px; background:var(--bg); font-weight:600;">
+                <option value="jarvis">Jarvis (Research)</option>
+                <option value="friday">Friday (Creative)</option>
+                <option value="vision">Vision (Logic)</option>
+                <option value="atlas">Atlas (Balanced)</option>
+            </select>
 
-            <button class="nav-btn" onclick="showView('chat')">💬 Chat</button>
-            <button class="nav-btn" onclick="showView('profile')">⚙️ Profile Settings</button>
-            
-            <div style="flex:1; margin-top:20px; overflow-y:auto">
-                <button class="btn-primary" onclick="newChat()" style="width:100%; font-size:13px; margin-bottom:15px">+ New Chat</button>
-                <div id="historyList"></div>
-            </div>
+            <button class="nav-btn" onclick="showView('chat')">💬 Chat</button>
+            <button class="nav-btn" onclick="showView('profile')">⚙️ Profile Settings</button>
+            
+            <div style="flex:1; margin-top:20px; overflow-y:auto">
+                <button class="btn-primary" onclick="newChat()" style="width:100%; font-size:13px; margin-bottom:15px">+ New Chat</button>
+                <div id="historyList"></div>
+            </div>
 
-            <button onclick="logout()" class="btn-logout">Logout</button>
-        </div>
+            <button onclick="logout()" class="btn-logout">Logout</button>
+        </div>
 
-        <div class="main-content">
-            <div id="chatView" style="height:100%; display:flex; flex-direction:column">
-                <div class="chat-box" id="chatBox"></div>
-                <div class="input-container">
-                    <input type="text" id="userInput" placeholder="Message your AI..." onkeypress="if(event.key==='Enter') sendMessage()">
-                    <button class="btn-primary" onclick="sendMessage()">Send</button>
-                </div>
-            </div>
+        <div class="main-content">
+            <div id="chatView" style="height:100%; display:flex; flex-direction:column">
+                <div class="chat-box" id="chatBox"></div>
+                <div class="input-container">
+                    <input type="text" id="userInput" placeholder="Message your AI..." onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button class="btn-primary" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
 
-            <div id="profileView" class="hidden">
-                <div class="profile-container" style="padding:40px; max-width:500px; margin:0 auto;">
-                    <h2>Settings</h2>
-                    <div class="avatar-edit-wrapper" style="position:relative; width:100px; margin-bottom:20px">
-                        <img id="profAvatar" src="https://via.placeholder.com/100" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
-                        <label for="avatarFile" style="position:absolute; bottom:0; right:0; background:var(--primary); color:white; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white;">📷</label>
-                        <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="uploadAvatar()">
-                    </div>
+            <div id="profileView" class="hidden">
+                <div class="profile-container" style="padding:40px; max-width:500px; margin:0 auto;">
+                    <h2>Settings</h2>
+                    <div class="avatar-edit-wrapper" style="position:relative; width:100px; margin-bottom:20px">
+                        <img id="profAvatar" src="https://via.placeholder.com/100" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
+                        <label for="avatarFile" style="position:absolute; bottom:0; right:0; background:var(--primary); color:white; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white;">📷</label>
+                        <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="uploadAvatar()">
+                    </div>
 
-                    <label style="font-size:12px; font-weight:700; color:var(--text-muted)">DISPLAY NAME</label>
-                    <input type="text" id="profName" style="margin-bottom:15px">
+                    <label style="font-size:12px; font-weight:700; color:var(--text-muted)">DISPLAY NAME</label>
+                    <input type="text" id="profName" style="margin-bottom:15px">
 
-                    <label style="font-size:12px; font-weight:700; color:var(--text-muted)">AVATAR URL</label>
-                    <input type="text" id="profUrl" readonly style="background:#f1f5f9; margin-bottom:20px">
+                    <label style="font-size:12px; font-weight:700; color:var(--text-muted)">AVATAR URL</label>
+                    <input type="text" id="profUrl" readonly style="background:#f1f5f9; margin-bottom:20px">
 
-                    <button class="btn-success" onclick="saveProfile()">Save Profile</button>
-                    <p id="profStatus" style="font-size:12px; margin-top:10px"></p>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <button class="btn-success" onclick="saveProfile()">Save Profile</button>
+                    <p id="profStatus" style="font-size:12px; margin-top:10px"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        const SB_URL = "https://yacuohapxztvkyabvfqf.supabase.co";
-        const SB_KEY = "sb_publishable_YyAyhOJ7K5orADFild0jlg_Z25bWDwn"; 
-        const AI_URL = "https://quantumforge-studio.onrender.com/chat";
-        const sb = window.supabase.createClient(SB_URL, SB_KEY);
-        let user = null;
-        let activeChatId = null;
+    <script>
+        const SB_URL = "https://yacuohapxztvkyabvfqf.supabase.co";
+        const SB_KEY = "sb_publishable_YyAyhOJ7K5orADFild0jlg_Z25bWDwn"; 
+        const AI_URL = "https://quantumforge-studio.onrender.com/chat";
+        const sb = window.supabase.createClient(SB_URL, SB_KEY);
+        let user = null;
+        let activeChatId = null;
 
-        // --- MARKDOWN & COPY FEATURE ---
-        marked.setOptions({
-            highlight: function(code, lang) {
-                return hljs.highlightAuto(code).value;
-            },
-            langPrefix: 'hljs language-'
-        });
+        // --- MARKDOWN & COPY FEATURE ---
+        marked.setOptions({
+            highlight: function(code, lang) {
+                return hljs.highlightAuto(code).value;
+            },
+            langPrefix: 'hljs language-'
+        });
 
-        // Wrap code blocks with Copy UI
-        function wrapCodeBlocks(html) {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            temp.querySelectorAll('pre').forEach(pre => {
-                const code = pre.querySelector('code');
-                const lang = code.className.replace('hljs language-', '') || 'code';
-                const container = document.createElement('div');
-                container.className = 'code-container';
-                container.innerHTML = `
-                    <div class="code-header">
-                        <span>${lang}</span>
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                `;
-                pre.parentNode.insertBefore(container, pre);
-                container.appendChild(pre);
-            });
-            return temp.innerHTML;
-        }
+        // Wrap code blocks with Copy UI
+        function wrapCodeBlocks(html) {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            temp.querySelectorAll('pre').forEach(pre => {
+                const code = pre.querySelector('code');
+                const lang = code.className.replace('hljs language-', '') || 'code';
+                const container = document.createElement('div');
+                container.className = 'code-container';
+                container.innerHTML = `
+                    <div class="code-header">
+                        <span>${lang}</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                `;
+                pre.parentNode.insertBefore(container, pre);
+                container.appendChild(pre);
+            });
+            return temp.innerHTML;
+        }
 
-        async function copyCode(btn) {
-            const code = btn.closest('.code-container').querySelector('code').innerText;
-            await navigator.clipboard.writeText(code);
-            btn.innerText = 'Done!';
-            btn.style.background = '#10b981';
-            setTimeout(() => { 
-                btn.innerText = 'Copy'; 
-                btn.style.background = '#444';
-            }, 2000);
-        }
+        async function copyCode(btn) {
+            const code = btn.closest('.code-container').querySelector('code').innerText;
+            await navigator.clipboard.writeText(code);
+            btn.innerText = 'Done!';
+            btn.style.background = '#10b981';
+            setTimeout(() => { 
+                btn.innerText = 'Copy'; 
+                btn.style.background = '#444';
+            }, 2000);
+        }
 
-        // --- AUTH ---
-        async function handleAuth(type) {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = type === 'login' 
-                ? await sb.auth.signInWithPassword({ email, password })
-                : await sb.auth.signUp({ email, password });
-            if (error) document.getElementById('authError').innerText = error.message;
-            else checkSession();
-        }
+        // --- AUTH ---
+        async function handleAuth(type) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { error } = type === 'login' 
+                ? await sb.auth.signInWithPassword({ email, password })
+                : await sb.auth.signUp({ email, password });
+            if (error) document.getElementById('authError').innerText = error.message;
+            else checkSession();
+        }
 
-        async function logout() { await sb.auth.signOut(); location.reload(); }
+        async function logout() { await sb.auth.signOut(); location.reload(); }
 
-        function showView(view) {
-            document.getElementById('chatView').classList.toggle('hidden', view !== 'chat');
-            document.getElementById('profileView').classList.toggle('hidden', view !== 'profile');
-        }
+        function showView(view) {
+            document.getElementById('chatView').classList.toggle('hidden', view !== 'chat');
+            document.getElementById('profileView').classList.toggle('hidden', view !== 'profile');
+        }
 
-        async function loadProfile() {
-            const { data } = await sb.from('profiles').select('*').eq('id', user.id).single();
-            if (data) {
-                document.getElementById('profName').value = data.name || "";
-                document.getElementById('profUrl').value = data.avatar_url || "";
-                document.getElementById('profAvatar').src = data.avatar_url || "https://via.placeholder.com/100";
-                document.getElementById('sideAvatar').src = data.avatar_url || "https://via.placeholder.com/42";
-                document.getElementById('sideName').innerText = data.name || "User";
-            }
-        }
+        async function loadProfile() {
+            const { data } = await sb.from('profiles').select('*').eq('id', user.id).single();
+            if (data) {
+                document.getElementById('profName').value = data.name || "";
+                document.getElementById('profUrl').value = data.avatar_url || "";
+                document.getElementById('profAvatar').src = data.avatar_url || "https://via.placeholder.com/100";
+                document.getElementById('sideAvatar').src = data.avatar_url || "https://via.placeholder.com/42";
+                document.getElementById('sideName').innerText = data.name || "User";
+            }
+        }
 
-        async function uploadAvatar() {
-            const file = document.getElementById('avatarFile').files[0];
-            if (!file) return;
-            const path = `${user.id}/${Date.now()}.png`;
-            const { error } = await sb.storage.from('avatar').upload(path, file);
-            if (!error) {
-                const { data: { publicUrl } } = sb.storage.from('avatar').getPublicUrl(path);
-                document.getElementById('profUrl').value = publicUrl;
-                document.getElementById('profAvatar').src = publicUrl;
-            }
-        }
+        async function uploadAvatar() {
+            const file = document.getElementById('avatarFile').files[0];
+            if (!file) return;
+            const path = `${user.id}/${Date.now()}.png`;
+            const { error } = await sb.storage.from('avatar').upload(path, file);
+            if (!error) {
+                const { data: { publicUrl } } = sb.storage.from('avatar').getPublicUrl(path);
+                document.getElementById('profUrl').value = publicUrl;
+                document.getElementById('profAvatar').src = publicUrl;
+            }
+        }
 
-        async function saveProfile() {
-            const name = document.getElementById('profName').value;
-            const avatar = document.getElementById('profUrl').value;
-            await sb.from('profiles').upsert({ id: user.id, name, avatar_url: avatar });
-            document.getElementById('profStatus').innerText = "✓ Saved";
-            loadProfile();
-        }
+        async function saveProfile() {
+            const name = document.getElementById('profName').value;
+            const avatar = document.getElementById('profUrl').value;
+            await sb.from('profiles').upsert({ id: user.id, name, avatar_url: avatar });
+            document.getElementById('profStatus').innerText = "✓ Saved";
+            loadProfile();
+        }
 
-        function addMsg(role, content) {
-            const box = document.getElementById('chatBox');
-            const div = document.createElement('div');
-            div.className = `message ${role}`;
-            let htmlContent = role === 'ai' ? marked.parse(content) : content;
-            if (role === 'ai') htmlContent = wrapCodeBlocks(htmlContent);
-            div.innerHTML = `<div class="message-content">${htmlContent}</div>`;
-            box.appendChild(div);
-            div.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
-            box.scrollTop = box.scrollHeight;
-            return div; 
-        }
+        function addMsg(role, content) {
+            const box = document.getElementById('chatBox');
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            let htmlContent = role === 'ai' ? marked.parse(content) : content;
+            if (role === 'ai') htmlContent = wrapCodeBlocks(htmlContent);
+            div.innerHTML = `<div class="message-content">${htmlContent}</div>`;
+            box.appendChild(div);
+            div.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+            box.scrollTop = box.scrollHeight;
+            return div; 
+        }
 
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if (!text) return;
-            if (!activeChatId) activeChatId = crypto.randomUUID();
-            addMsg('user', text);
-            input.value = "";
-            const typing = addMsg('ai', '...');
-            try {
-                await sb.from('chats').insert({ user_id: user.id, conversation_id: activeChatId, role: 'user', message: text });
-                const res = await fetch(AI_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ message: text, model: document.getElementById('modelSelect').value })
-                });
-                const data = await res.json();
-                typing.innerHTML = `<div class="message-content">${wrapCodeBlocks(marked.parse(data.reply))}</div>`;
-                typing.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
-                await sb.from('chats').insert({ user_id: user.id, conversation_id: activeChatId, role: 'ai', message: data.reply });
-                loadHistory();
-            } catch (e) { typing.innerText = "Connection error."; }
-        }
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text) return;
+            if (!activeChatId) activeChatId = crypto.randomUUID();
+            addMsg('user', text);
+            input.value = "";
+            const typing = addMsg('ai', '...');
+            try {
+                await sb.from('chats').insert({ user_id: user.id, conversation_id: activeChatId, role: 'user', message: text });
+                const res = await fetch(AI_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: text, model: document.getElementById('modelSelect').value })
+                });
+                const data = await res.json();
+                typing.innerHTML = `<div class="message-content">${wrapCodeBlocks(marked.parse(data.reply))}</div>`;
+                typing.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+                await sb.from('chats').insert({ user_id: user.id, conversation_id: activeChatId, role: 'ai', message: data.reply });
+                loadHistory();
+            } catch (e) { typing.innerText = "Connection error."; }
+        }
 
-        async function loadHistory() {
-            const { data } = await sb.from('chats').select('conversation_id, message').eq('user_id', user.id).order('created_at', { ascending: false });
-            const list = document.getElementById('historyList');
-            list.innerHTML = "";
-            const seen = new Set();
-            data?.forEach(chat => {
-                if (!seen.has(chat.conversation_id)) {
-                    seen.add(chat.conversation_id);
-                    const item = document.createElement('div');
-                    item.className = "nav-btn";
-                    item.textContent = chat.message.substring(0, 25) + "...";
-                    item.onclick = () => { activeChatId = chat.conversation_id; document.getElementById('chatBox').innerHTML = ""; loadMessages(chat.conversation_id); showView('chat'); };
-                    list.appendChild(item);
-                }
-            });
-        }
+        async function loadHistory() {
+            const { data } = await sb.from('chats').select('conversation_id, message').eq('user_id', user.id).order('created_at', { ascending: false });
+            const list = document.getElementById('historyList');
+            list.innerHTML = "";
+            const seen = new Set();
+            data?.forEach(chat => {
+                if (!seen.has(chat.conversation_id)) {
+                    seen.add(chat.conversation_id);
+                    const item = document.createElement('div');
+                    item.className = "nav-btn";
+                    item.textContent = chat.message.substring(0, 25) + "...";
+                    item.onclick = () => { activeChatId = chat.conversation_id; document.getElementById('chatBox').innerHTML = ""; loadMessages(chat.conversation_id); showView('chat'); };
+                    list.appendChild(item);
+                }
+            });
+        }
 
-        async function loadMessages(id) {
-            const { data } = await sb.from('chats').select('*').eq('conversation_id', id).order('created_at');
-            data.forEach(m => addMsg(m.role, m.message));
-        }
+        async function loadMessages(id) {
+            const { data } = await sb.from('chats').select('*').eq('conversation_id', id).order('created_at');
+            data.forEach(m => addMsg(m.role, m.message));
+        }
 
-        function newChat() { activeChatId = null; document.getElementById('chatBox').innerHTML = ""; showView('chat'); }
+        function newChat() { activeChatId = null; document.getElementById('chatBox').innerHTML = ""; showView('chat'); }
 
-        async function checkSession() {
-            const { data } = await sb.auth.getSession();
-            if (data.session) {
-                user = data.session.user;
-                document.getElementById('authView').classList.add('hidden');
-                document.getElementById('appView').classList.remove('hidden');
-                loadProfile();
-                loadHistory();
-            }
-        }
-        checkSession();
-    </script>
+        async function checkSession() {
+            const { data } = await sb.auth.getSession();
+            if (data.session) {
+                user = data.session.user;
+                document.getElementById('authView').classList.add('hidden');
+                document.getElementById('appView').classList.remove('hidden');
+                loadProfile();
+                loadHistory();
+            }
+        }
+        checkSession();
+    </script>
 </body>
 </html>
